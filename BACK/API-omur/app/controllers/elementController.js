@@ -130,17 +130,20 @@ const elementController = {
             try {
                 console.log('req.body : '+ JSON.stringify(req.body));
                 const elements = req.body.newDocList;
+                // Initialization of an array to push all elements ids with new positions and send it ot the front
+                const elementsWithNewPosition = [];
                 // For each element we get the id and its position and update in database
                 for (const element of elements){
                    
                     const updatedElement= new Element(element);
                     await updatedElement.updatePosition(wallId);
+                    elementsWithNewPosition.push(updatedElement);
                     console.log('updated element : ',updatedElement)
-                }
+                };
+                console.log('elementsWithNewPosition : ', elementsWithNewPosition);
+                res.status(200).json(elementsWithNewPosition);
 
-                res.status(200).json(updatedElement);
-            
-                  
+                                  
     
             } catch (error) {
                 console.error(error)
