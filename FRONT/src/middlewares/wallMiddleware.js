@@ -1,5 +1,5 @@
 // import axios from 'axios';
-import { CHANGE_WALL, deleteWallFromStore, storeNewWall, updateWall } from '../actions/wall';
+import { CHANGE_WALL, deleteWallFromStore, storeNewWall, updateWall, clearPanel } from '../actions/wall';
 import { storeAllWalls } from '../actions/walls';
 import API from './api';
 
@@ -94,6 +94,7 @@ const wallMiddleware = (store) => (next) => (action) => {
       API(config)
         .then((response) => {
           console.log('infos mur changées',response.data);
+          store.dispatch(clearPanel(false));
           store.dispatch(updateWall(response.data));
         })
         .catch((error) => {

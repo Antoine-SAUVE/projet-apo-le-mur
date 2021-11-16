@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import docs from 'src/data/element';
-import { updateDocName } from 'src/actions/element.js'
-import { getWall, getWallInfo, updateWallInput, changePanel, toggleEye, displayMode, redirectPDF } from 'src/actions/wall.js'
+import { updateDocName, emptyForm } from 'src/actions/element.js'
+import { getWall, getWallInfo, updateWallInput, changePanel, toggleEye, displayMode, redirectPDF, clearPanel, backToStamp } from 'src/actions/wall.js'
 import { updateContents } from "src/actions/textEdit";
 import Docs from './docs';
 import AddDocForm from './addDoc';
@@ -29,9 +29,30 @@ const Wall = () => {
     document.querySelector('.main').classList.add('on');
   }
 
-  const closePanel = () => {
+  const closePanel = (e) => {
+    console.log('event1', e);
+    if (e != undefined) {
+      if ( panel == 'changeWallPanel') {
+        dispatch(backToStamp());
+      } else if ( panel == 'infoDocPanel' || panel == 'editDocPanel' ) {
+        setTimeout(()=>{
+          dispatch(emptyForm());
+        },500);
+        
+      }
+    }
     document.querySelector('.main').classList.remove('on');
   }
+
+  useEffect(()=>{
+    if (panel == false) {
+      console.log('rrrr');
+      dispatch(clearPanel(true));
+      closePanel();
+    }
+  }, [panel]);
+
+  
 
   const displayPanel = (e) => {
     dispatch(changePanel(e.target.getAttribute('panel')));

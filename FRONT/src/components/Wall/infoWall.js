@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { changePanel } from 'src/actions/wall.js';
-import usersData from 'src/data/user.js'
 
 import './style.scss';
 

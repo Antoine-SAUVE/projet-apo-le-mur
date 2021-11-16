@@ -1,4 +1,6 @@
-import { CHANGE_POS, CHANGE_PANEL, TOGGLE_EYE, POST_USER, DELETE_USER, UPDATE_DOC_PROPS, DISPLAY_MODE, REDIRECT_PDF, SET_WALL , SET_WALL_INFO, UPDATE_WALL, EMPTY_WALL, UPDATE_WALL_FILE } from "src/actions/wall";
+import { UPDATE_POS, CHANGE_PANEL, TOGGLE_EYE, POST_USER, DELETE_USER, UPDATE_DOC_PROPS, 
+        DISPLAY_MODE, REDIRECT_PDF, SET_WALL , SET_WALL_INFO, UPDATE_WALL, EMPTY_WALL,
+        UPDATE_WALL_FILE, UPDATE_USER_ADD, CLEAR_PANEL, BACK_TO_STAMP } from "src/actions/wall";
 import { ADD_DOC, DELETE_DOC, UPDATE_DOC } from "src/actions/element";
 
 const initialState = {
@@ -12,12 +14,14 @@ const initialState = {
   created_at: '20/10/2021',
   updated_at: '28/10/2021',
   currentAdded: '',
+  addedError: '',
   img:{},
   panel: '',
   detailed: -1,
   displaysquare: false,
   toPDF:false,
   docList:[],
+  wallStamp:{},
 };
 
 const localPath = 'http://localhost:3000/';
@@ -49,7 +53,6 @@ const reducer = (state = initialState, action = {}) => {
     case ADD_DOC : {
       const { id, name, description, type, link, src, owner_id, position } = action.doc;
       const docList = state.docList;
-      console.log('doclist.length', docList.length)
       let linkArray, srcEdit = src;
       if (type == 'image') srcEdit = localPath+src;
       link == null ? linkArray = [] : linkArray = link.split('\\');
@@ -146,22 +149,23 @@ const reducer = (state = initialState, action = {}) => {
           ...state,
           users: newUsers,
           currentAdded: '',
+          addedError: '',
         }
       } else {
         let error = "";
-        typeof action.user == 'object' ? error = 'msg:Cet utilisateur est déjà membre' : error = 'msg:Cet utilisateur n\'existe pas';
+        typeof action.user == 'object' ? error = 'Cet utilisateur est déjà membre' : error = 'Cet utilisateur n\'existe pas';
         return{
           ...state,
-          currentAdded: error,
+          addedError: error,
         }
       }
     }
     case DELETE_USER :{
+      const infoUser = action.user.split(' ');
       const allUsers = state.users;
       const newUsers = allUsers.filter((user) => {
-        return user != action.user;
+        return (user.lastname != infoUser[1] && user.name != infoUser[0]);
       });
-
       return{
         ...state,
         users: newUsers,
@@ -174,6 +178,12 @@ const reducer = (state = initialState, action = {}) => {
         [action.prop]: action.name,
       }
 
+    case UPDATE_USER_ADD :
+      return{
+        ...state,
+        [action.prop]: action.name,
+        addedError: ''
+      }
     case UPDATE_WALL_FILE :
       return{
         ...state,
@@ -190,32 +200,13 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         toPDF: !state.toPDF,
       }
-    case CHANGE_POS :{
-      let newDocList = state.docList;
-      const { newPos, oldPos } = action;
-      if (oldPos > newPos) {
-        newDocList.forEach((doc) => {
-          if (doc.position == oldPos) {
-            doc.position = newPos;
-          } else if (doc.position >= newPos && doc.position <= oldPos) {
-            doc.position += 1;
-          }
-        });
-      } else {
-        newDocList.forEach((doc) => {
-          if (doc.position == oldPos) {
-            doc.position = newPos;    
-          } else if (doc.position >= oldPos && doc.position <= newPos) {
-            doc.position -= 1;
-          }
-        });
-      }
+    case UPDATE_POS :{
       return{
         ...state,
-        position: newDocList,
+        position: action.docList,
       }
     }
-    case SET_WALL_INFO :
+    case SET_WALL_INFO : {
       let {created_at, description, id, owner_id, photo, title, updated_at} = action.wall.result;
       const usersTab = action.wall.collabsData;
       const owner = usersTab.find((user) => user.id == owner_id);
@@ -242,19 +233,55 @@ const reducer = (state = initialState, action = {}) => {
         title: title,
         updated_at: dateToString(updated_at),
         users: usersTab,
+        wallStamp: {description: description, photo: localPath+photo, title: title, users: usersTab},
       }
-    case UPDATE_WALL :
-      console.log('new wall', action.wall);
+    }
+    case UPDATE_WALL : {
+      let {created_at, description, photo, title, updated_at} = action.wall.result;
+      const usersTab = action.wall.collabsData;
       
+      const users = usersTab.map((user) => {
+        return user.name;
+      });
+
+      const dateToString = (date) => {
+        let stringDate = date.substring(0, 10);
+        stringDate = stringDate.split('-');
+        stringDate = stringDate.reverse();
+        stringDate = stringDate.join('-');
+        return stringDate;
+      }
       return{
         ...state,
+        created_at: dateToString(created_at),
+        description: description,
+        photo: localPath+photo,
+        title: title,
+        updated_at: dateToString(updated_at),
+        users: usersTab,
+        wallStamp: {description: description, photo: localPath+photo, title: title, users: usersTab},
       }
-    case EMPTY_WALL :
-        
-        return{
-          ...state,
-          docList: [],
-        }
+    }
+    case BACK_TO_STAMP:{
+      const {description, photo,title, users} = state.wallStamp;
+      return{
+        ...state,
+        description: description, 
+        photo: photo, 
+        title: title, 
+        users: users,
+      }
+    }
+    case EMPTY_WALL:
+      return{
+        ...state,
+        docList: [],
+      }
+    case CLEAR_PANEL:
+      return{
+        ...state,
+        panel: action.panel,
+      }
     default:
       return state;
   }

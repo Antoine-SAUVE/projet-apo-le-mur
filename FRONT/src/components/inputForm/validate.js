@@ -101,10 +101,10 @@ export  const checkEmail = (el) => {
   let val = true;
   if(!validateEmail(el.value)) {
     if (el.classList.contains('error')) {
-      el.parentNode.lastChild.innerHTML = 'email non valide';
+      el.parentNode.lastChild.innerHTML = 'Saisissez une adresse mail valide';
     } else {
       el.classList.add('error');
-      el.parentNode.insertAdjacentHTML('beforeend', '<div class="errormsg">email non valide</div>');
+      el.parentNode.insertAdjacentHTML('beforeend', '<div class="errormsg">Saisissez une adresse mail valide</div>');
     }
     val = false;
   } else {
@@ -139,7 +139,7 @@ export const checkFile = (el) => {
   return val;
 }
 
-export  const checkCustom = (el, msg, CbackFunc) => {
+export const checkCustom = (el, msg, CbackFunc) => {
   let val = true;
   if(!CbackFunc) {
     if (el.classList.contains('error')) {

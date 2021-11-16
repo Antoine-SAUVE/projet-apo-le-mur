@@ -39,9 +39,7 @@ const addDocForm = ( {closePanel} ) => {
   const submitDoc = (e) => {
     e.preventDefault();
     if (checkForm(e.target.elements)) {
-      //resetForm();
       dispatch(postDoc());
-      closePanel();
     }
   }
 

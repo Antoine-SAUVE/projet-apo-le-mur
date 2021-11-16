@@ -97,11 +97,8 @@ const elementController = {
             // we get the path of the photo (and we remove "public/" in the path) and insert it in req.body
             if(req.file){
                 req.body.src = req.file.filename;
-                console.log('req.body.src ' + req.body.src);
-            }else{
-                req.body.src = ""
-            };
-            console.log('req.src : '+ req.body.src);
+            }
+            console.log('req.body.src : '+ req.body.src);
             // We create a new instance of element and update it in database
             const newElement = new Element(req.body);
             const updatedElement = await newElement.update(wallId,elementId);
@@ -134,7 +131,6 @@ const elementController = {
                 const elementsWithNewPosition = [];
                 // For each element we get the id and its position and update in database
                 for (const element of elements){
-                   
                     const updatedElement= new Element(element);
                     await updatedElement.updatePosition(wallId);
                     elementsWithNewPosition.push(updatedElement);
@@ -143,8 +139,6 @@ const elementController = {
                 console.log('elementsWithNewPosition : ', elementsWithNewPosition);
                 res.status(200).json(elementsWithNewPosition);
 
-                                  
-    
             } catch (error) {
                 console.error(error)
                 if (error instanceof Wall.NoDataError) {

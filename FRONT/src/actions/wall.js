@@ -5,6 +5,7 @@ export const POST_USER = 'POST_USER';
 export const DELETE_USER = 'DELETE_USER';
 export const UPDATE_DOC_PROPS = 'UPDATE_DOC_PROPS';
 export const UPDATE_WALL_FILE = 'UPDATE_WALL_FILE';
+export const UPDATE_USER_ADD = 'UPDATE_USER_ADD';
 export const DISPLAY_MODE = 'DISPLAY_MODE';
 export const REDIRECT_PDF = 'REDIRECT_PDF';
 export const STORE_NEW_WALL = 'STORE_NEW_WALL';
@@ -15,19 +16,28 @@ export const GET_WALL = 'GET_WALL';
 export const GET_WALL_INFO = 'GET_WALL_INFO';
 export const SET_WALL_INFO = 'SET_WALL_INFO';
 export const CHANGE_POS = 'CHANGE_POS';
+export const UPDATE_POS = 'UPDATE_POS';
 export const CHANGE_WALL = 'CHANGE_WALL';
 export const UPDATE_WALL = 'UPDATE_WALL';
 export const EMPTY_WALL = 'EMPTY_WALL';
+export const CLEAR_PANEL = 'CLEAR_PANEL';
+export const BACK_TO_STAMP = 'BACK_TO_STAMP';
 
 export const changePanel = (panel) => ({
   type: CHANGE_PANEL,
   panel: panel,
 });
 
-export const changePos = (oldPos, newPos) => ({
+export const changePos = (oldPos, newPos, docList) => ({
   type: CHANGE_POS,
   oldPos: oldPos,
   newPos: newPos,
+  docList: docList,
+});
+
+export const updatePos = (docList) => ({
+  type: UPDATE_POS,
+  docList: docList,
 });
 
 export const toggleEye = (detailed) => ({
@@ -58,6 +68,12 @@ export const updateWallInput = (name, prop) => ({
 
 export const updateWallFile = (name, prop) => ({
   type: UPDATE_WALL_FILE,
+  name: name,
+  prop: prop,
+});
+
+export const updateUserAdd = (name, prop) => ({
+  type: UPDATE_USER_ADD,
   name: name,
   prop: prop,
 });
@@ -113,6 +129,16 @@ export const updateWall = (wall) => ({
 export const emptyWall = () => ({ 
   type: EMPTY_WALL,  
 });
+
+export const clearPanel = (panel) => ({
+  type: CLEAR_PANEL,
+  panel: panel,
+});
+
+export const backToStamp = () => ({
+  type: BACK_TO_STAMP,
+});
+
 
 
 

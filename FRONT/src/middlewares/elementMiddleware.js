@@ -1,6 +1,6 @@
 // import axios from 'axios';
 
-import { GET_WALL, GET_WALL_INFO, CHANGE_POS, setWall, setWallInfo, emptyWall } from "src/actions/wall";
+import { GET_WALL, GET_WALL_INFO, CHANGE_POS, setWall, setWallInfo, emptyWall, clearPanel } from "src/actions/wall";
 import { storeAllWalls } from "src/actions/walls";
 import { POST_DOC, SUP_DOC, CHANGE_DOC, addDoc, deleteDoc, updateDoc, emptyForm } from "src/actions/element";
 
@@ -38,6 +38,7 @@ const wallMiddleware = (store) => (next) => (action) => {
         .then((response) => {
           console.log(response.data, 'élément crée');
           store.dispatch(addDoc(response.data));
+          store.dispatch(clearPanel(false));
           setTimeout(store.dispatch(emptyForm()), 500);
         })
         .catch((error) => {
@@ -59,7 +60,7 @@ const wallMiddleware = (store) => (next) => (action) => {
           if (propName == 'link') {
             let linkString = doc.link.join('\\');
             docData.set(propName, linkString);
-          } else if (propName == 'src' && FormerDoc.type == 'image'){
+          } else if (propName == 'src' && doc.type == 'image'){
             docData.set('photo', doc.img);
           } else {
             docData.set(propName, doc[prop]);
@@ -68,7 +69,7 @@ const wallMiddleware = (store) => (next) => (action) => {
           if (propName == 'link') {
             let linkString = FormerDoc.link.join('\\');
             docData.set(propName, linkString);
-          } else if (propName == 'src' && FormerDoc.type == 'image'){
+          } else if (propName == 'src' && doc.type == 'image'){
             let imgName = doc.src.substring(doc.src.lastIndexOf('/') + 1);
             docData.set('src', imgName);
           }else {
@@ -77,6 +78,7 @@ const wallMiddleware = (store) => (next) => (action) => {
         }
         index++;
       }
+      docData.get('photo') ? console.log('data photo', docData.get('photo')) : console.log('data src', docData.get('src'));
       const config = {
         method: 'patch',
         url: `/user/walls/${state.wall.id}/elements/${doc.id}`,
@@ -88,6 +90,7 @@ const wallMiddleware = (store) => (next) => (action) => {
           console.log('doc changé');
           console.log(response.data);
           store.dispatch(updateDoc(response.data));
+          store.dispatch(clearPanel(false));
           setTimeout(store.dispatch(emptyForm()), 500);
         })
         .catch((error) => {
@@ -130,7 +133,7 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case CHANGE_POS :{
-      let newDocList = state.wall.docList;
+      let newDocList = action.docList;
       const { newPos, oldPos } = action;
       if (oldPos > newPos) {
         newDocList.forEach((doc) => {
@@ -149,8 +152,9 @@ const wallMiddleware = (store) => (next) => (action) => {
           }
         });
       }
-      newDocList = newDocList.map((doc) => ({id: doc.id, position: doc.position})),
+      
       newDocList = {newDocList};
+      console.log('doc list old', newDocList);
       const config = {
         method: 'patch',
         url: `/user/walls/${id}/elements`,
@@ -159,7 +163,7 @@ const wallMiddleware = (store) => (next) => (action) => {
       API(config)
         .then((response) => {
           console.log('change les elem de position',response.data);
-          //store.dispatch(setWall(response.data));
+          store.dispatch(updatePos(response.data));
         })
         .catch((error) => {
           console.log(error);

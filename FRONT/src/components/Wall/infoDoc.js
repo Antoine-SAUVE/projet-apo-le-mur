@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { changePanel, changeForm } from 'src/actions/wall.js'
-import { supDoc  } from 'src/actions/element.js'
+import { changePanel, changeForm } from 'src/actions/wall.js';
+import { supDoc, emptyForm } from 'src/actions/element.js';
 
 import './style.scss';
 
@@ -22,6 +22,7 @@ const infoDocForm = ({ closePanel }) => {
 
   const supElem = () => {
     dispatch(supDoc());
+    dispatch(emptyForm());
     closePanel()
   }
 

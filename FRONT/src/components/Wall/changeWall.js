@@ -1,15 +1,17 @@
 import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
 import Input from "../inputForm/inputs";
 import ListInput from "../inputForm/listInput";
 import Textarea from "../inputForm/textarea";
 import FileInput from "../inputForm/file";
-import { updateWallInput, tryUser, deleteUser, changeWall } from "src/actions/wall";
+import { checkEmail, checkCustom } from "src/components/inputForm/validate";
+import { updateWallInput, updateWallFile, tryUser, deleteUser, changeWall, updateUserAdd } from "src/actions/wall";
 
 import './style.scss';
 
 const ChangeWallForm = ({closePanel}) => {
   const dispatch = useDispatch();
-  const { title, description, photo, users, currentAdded } = useSelector((state) => state.wall);
+  const { title, description, photo, users, currentAdded, addedError } = useSelector((state) => state.wall);
   const imgName = photo.substring(photo.lastIndexOf('/') + 1);
 
   const inputChange = (e) => {
@@ -20,11 +22,18 @@ const ChangeWallForm = ({closePanel}) => {
     if (currentAdded.trim().length) dispatch(tryUser(currentAdded));
   }
 
+  const [userAdd, setUserAdd] = useState('');
   const changeUser = (e) => {
-    console.log('changeUser', e.value);
-    dispatch(updateWallInput(e.target.value, e.target.name));
+    dispatch(updateUserAdd(e.target.value, e.target.name));
+    setUserAdd(e.target);
   }
-  //checkUrl(e.target.previousElementSibling.firstChild.firstChild)
+
+  useEffect(() => {
+    if (userAdd == '') return;
+    let available;
+    addedError.length ? available = false : available = true;
+    if (checkEmail(userAdd)) checkCustom(userAdd, addedError, available);
+  }, [addedError]);
 
 
   const suppUser = (e) => {
@@ -32,13 +41,12 @@ const ChangeWallForm = ({closePanel}) => {
   }
 
   const fileChange = (e) => {
-    dispatch(updateWallInput(e.target.files[0], e.target.name));
+    dispatch(updateWallFile(e.target.files[0], e.target.name));
   }
 
   const submitDoc = (e) => {
     e.preventDefault();
     dispatch(changeWall());
-    closePanel();
   }
 
   const userListJSX = users.map((user) => {
