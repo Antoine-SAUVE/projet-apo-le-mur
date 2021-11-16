@@ -51,7 +51,7 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case VIEW_DOC :
-      const {id, name, description, type, link, src, owner_id} = action.doc;
+      const {id, name, description, type, link, src, owner_id, position} = action.doc;
       return{
         ...state,
         id: id,
@@ -61,6 +61,7 @@ const reducer = (state = initialState, action = {}) => {
         link: link,
         src: src,
         owner_id: owner_id,
+        position: position,
       }
     case EMPTY_FORM :
       return{

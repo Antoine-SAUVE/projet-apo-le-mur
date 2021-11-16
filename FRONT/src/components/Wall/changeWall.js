@@ -11,7 +11,7 @@ import './style.scss';
 
 const ChangeWallForm = ({closePanel}) => {
   const dispatch = useDispatch();
-  const { title, description, photo, users, currentAdded, addedError } = useSelector((state) => state.wall);
+  const { title, description, photo, users, owner_id, currentAdded, addedError } = useSelector((state) => state.wall);
   const imgName = photo.substring(photo.lastIndexOf('/') + 1);
 
   const inputChange = (e) => {
@@ -49,7 +49,8 @@ const ChangeWallForm = ({closePanel}) => {
     dispatch(changeWall());
   }
 
-  const userListJSX = users.map((user) => {
+  const userFiltered = users.filter((user) => user.id != owner_id);
+  const userListJSX = userFiltered.map((user) => {
     return(
       <div key={user.id}>
         <div className="field">

@@ -4,7 +4,7 @@ import Gallery from "react-photo-gallery";
 import Doc from './doc';
 import { arrayMove } from 'react-sortable-hoc';
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-;import { changePos, updatePos } from 'src/actions/wall.js'
+;import { changePos } from 'src/actions/wall.js'
 
 import './style.scss';
 
@@ -28,13 +28,12 @@ const Docs = ( {docs, getAction, getInfo} ) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     console.log('items items items', items);
     dispatch(changePos(oldIndex + 1, newIndex + 1, docList));
-    //dispatch(updatePos(oldIndex + 1, newIndex + 1));
     setItems(arrayMove(items, oldIndex, newIndex));
   };
  
   return (
     <div className="board">
-      <SortableGallery distance={2} items={items.map((doc) => ({...doc, getAction: getAction, getInfo: getInfo}))} onSortEnd={onSortEnd} axis={"xy"} />
+      <SortableGallery distance={2} items={items.map((doc) => ({...doc, getAction: getAction, getInfo: getInfo, width:2, height:3}))} onSortEnd={onSortEnd} axis={"xy"} />
     </div>
   )
 };

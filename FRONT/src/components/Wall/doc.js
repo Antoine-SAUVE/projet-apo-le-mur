@@ -27,6 +27,7 @@ const Doc = ({ photo, margin, direction, top, left }) => {
   }
 
   const seeDoc = (e) => {
+
     dispatch(viewDoc({
       id:photo.id, 
       name:photo.name, 

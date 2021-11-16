@@ -9,6 +9,7 @@ export const POST_DOC = 'POST_DOC';
 export const CHANGE_DOC = 'CHANGE_DOC';
 export const UPDATE_DOC = 'UPDATE_DOC';
 export const SUP_DOC = 'SUP_DOC';
+export const SUP_POS = 'SUP_POS';
 export const DELETE_DOC = 'DELETE_DOC';
 
 export const updateDocName = (name, prop) => ({
@@ -64,9 +65,15 @@ export const supDoc = () => ({
   type: SUP_DOC,
 });
 
-export const deleteDoc = (id) => ({
-  type: DELETE_DOC,
+export const supPos = (id, position) => ({
+  type: SUP_POS,
   id: id,
+  position: position,
+});
+
+export const deleteDoc = (docList) => ({
+  type: DELETE_DOC,
+  docList: docList,
 });
 
 export const storeNewDoc = (items) => ({

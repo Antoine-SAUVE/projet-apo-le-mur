@@ -88,32 +88,20 @@ const reducer = (state = initialState, action = {}) => {
         docList: action.items
       }
     case DELETE_DOC : {
-      let supIndex, supPos;
-      state.docList.forEach((doc, index) => {
-        if(doc.id == action.id) {
-          supIndex = index;
-          supPos = doc.position;
-        }
-      });
-      
-      let newList = state.docList;
-      newList.splice(supIndex, 1);
-      newList.forEach((doc) => {
-        if (doc.position > supPos) doc.position -= 1;
-      });
+      let newDocList = action.docList;
+      newDocList.sort((a, b) => a.position - b.position);
       return{
         ...state,
-        docList: newList,
+        docList: newDocList,
       }
     }
     case UPDATE_DOC : {
       let newDoc = action.doc;
-      let newDocList = state.docList.map((doc) => {
-        if (doc.id != action.doc.id) return doc;
-      });
+      let newDocList = state.docList.filter((doc) => doc.id != action.doc.id);
       if (newDoc.type == 'image') newDoc.src = localPath+newDoc.src;
       newDoc.link = newDoc.link.split('\\');
       newDocList = [...newDocList, newDoc];
+      newDocList.sort((a, b) => a.position - b.position);
       return{
         ...state,
         docList: newDocList,
