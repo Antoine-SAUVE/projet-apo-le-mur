@@ -46,6 +46,7 @@
         background-repeat: no-repeat;
         background-size: 100%;
         background-position: center;
+        transition: 0.5s;
         &.info{
           background-image: url(#{$prodPath}/icons/info.png);
         }
@@ -81,6 +82,11 @@
           border-bottom: 1px solid #000000;
         }
         &.menu-mob{
+          display: none;
+          z-index: 1;
+          padding: 17px 0 10px;
+          border-bottom: none;
+          background-color:#ffffff;
           .bar{
             width: 35px;
             height: 4px;
@@ -107,7 +113,6 @@
         border: 8px solid #9e9e9e;
         background-color: #c5927a;
         background-image: url(#{$prodPath}/fondLiege.jpg);
-        // background-repeat: no-repeat;
         .react-photo-gallery--gallery > div {
           align-items: center;
           justify-content: space-around;
@@ -374,3 +379,88 @@
   border-right: 4px solid #ffffff;
   overflow: hidden;
 }
+
+@media screen and (max-width:640px) {
+  .wall{
+    .sub-header{
+      display: flex;
+      align-items: center;
+      height: 90px;
+      text-align: center;
+      h1{
+        font-size: 5vw;
+        line-height: 100px;
+        max-width: 55%;
+        margin: 0 auto;
+      }
+    }
+    .main{
+      position: static;
+      width: 100%;
+      .dashboard{
+        z-index: 31;
+        padding:20px 15px;
+      }
+      .board-wrapper{
+        width: 100%;
+        min-height: calc(100% - 90px);
+        padding: 0 15px 15px 15px;
+        .board{
+          min-height: calc(100vh - 105px);
+          padding: 15px 10px;
+          border-width: 5px;
+        }
+      }
+      .menu-bar{
+        position: absolute;
+        z-index: 30;
+        top: 0;
+        left: 0;
+        min-height: auto;
+        height: 50px;
+        width: 45px;
+        transition: 0.5s;
+        &.on{ 
+          height: 100vh;
+          .menu-mob{
+            .bar{
+              transition:0.5s;
+              &:first-child {
+                transform: rotate(45deg) translate(7px, 7px);
+              }
+              &:first-child + .bar {
+                transform: rotate(-45deg);
+              }
+              &:last-child {
+                transform: rotate(-45deg) translate(7px, -7px);
+              }
+            }
+          }
+          .info{
+            transform:translateY(51px);
+          }
+          .add{
+            transform:translateY(102px);
+          }
+          .display{
+            transform:translateY(153px);
+          }
+          .pdf{
+            transform:translateY(204px);
+          }
+        }
+        .icon{
+          position: absolute;
+          margin: 0 5px;
+          &.display{
+            position: absolute;
+          } 
+          &.menu-mob{
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}
+

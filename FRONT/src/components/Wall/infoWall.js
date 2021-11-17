@@ -21,7 +21,7 @@ const InfoWallForm = () => {
 
   return (
     <div className="form-info panel-form change-wall">
-      <h2 className="form-title">Info Document</h2>
+      <h2 className="form-title">Info du mur</h2>
       <div className="info-block date flex">
         <div className="left">
           <label>Créé le :</label>

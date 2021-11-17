@@ -65,7 +65,7 @@ const editDocForm = ({  closePanel }) => {
 
   return (
     <div className="panel-form">
-      <h2 className="form-title">Nouveau Document</h2>
+      <h2 className="form-title">Modifier le Document</h2>
       <form className="add-doc-form" onSubmit={submitDoc} onChange={formChange} encType="multipart/form-data">
         <div className="inner-form">
           <Input classes="required" type="text" label="Nom" name="name" value={name} changeInput={inputChange}/>

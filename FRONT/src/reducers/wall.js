@@ -1,6 +1,6 @@
 import { UPDATE_POS, CHANGE_PANEL, TOGGLE_EYE, POST_USER, DELETE_USER, UPDATE_DOC_PROPS, 
         DISPLAY_MODE, REDIRECT_PDF, SET_WALL , SET_WALL_INFO, UPDATE_WALL, EMPTY_WALL,
-        UPDATE_WALL_FILE, UPDATE_USER_ADD, CLEAR_PANEL, BACK_TO_STAMP } from "src/actions/wall";
+        UPDATE_WALL_FILE, UPDATE_USER_ADD, CLEAR_PANEL, BACK_TO_STAMP, MENU_MOB } from "src/actions/wall";
 import { ADD_DOC, DELETE_DOC, UPDATE_DOC } from "src/actions/element";
 
 const initialState = {
@@ -22,6 +22,7 @@ const initialState = {
   toPDF:false,
   docList:[],
   wallStamp:{},
+  menuMob: false,
 };
 
 const localPath = 'http://localhost:3000/';
@@ -269,6 +270,12 @@ const reducer = (state = initialState, action = {}) => {
       return{
         ...state,
         panel: action.panel,
+      }
+    case MENU_MOB:
+      console.log('state.menuMob',state.menuMob);
+      return{
+        ...state,
+        menuMob: !state.menuMob,
       }
     default:
       return state;

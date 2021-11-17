@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import docs from 'src/data/element';
 import { updateDocName, emptyForm } from 'src/actions/element.js'
-import { getWall, getWallInfo, updateWallInput, changePanel, toggleEye, displayMode, redirectPDF, clearPanel, backToStamp } from 'src/actions/wall.js'
+import { getWall, getWallInfo, updateWallInput, changePanel, toggleEye, displayMode, redirectPDF, clearPanel, backToStamp, menuMobbb } from 'src/actions/wall.js'
 import { updateContents } from "src/actions/textEdit";
 import Docs from './docs';
 import AddDocForm from './addDoc';
@@ -22,7 +22,7 @@ const Wall = () => {
   const location = useLocation();
   const { wallTitle, wallId } = location.state;
  
-  const { docList, panel, displaysquare, toPDF } = useSelector((state) => state.wall);
+  const { docList, panel, displaysquare, toPDF, menuMob } = useSelector((state) => state.wall);
   const currentUser = useSelector((state) => state.user.loggedUserInfos.id);
 
   const slidePanel = () => {
@@ -46,13 +46,10 @@ const Wall = () => {
 
   useEffect(()=>{
     if (panel == false) {
-      console.log('rrrr');
       dispatch(clearPanel(true));
       closePanel();
     }
   }, [panel]);
-
-  
 
   const displayPanel = (e) => {
     dispatch(changePanel(e.target.getAttribute('panel')));
@@ -71,6 +68,10 @@ const Wall = () => {
 
   const displaySquare = (e) => {
     dispatch(displayMode());
+  }
+
+  const triggerMenu = () => {
+    dispatch(menuMobbb());
   }
 
   const editPdf = () => {
@@ -114,8 +115,8 @@ const Wall = () => {
           {panel == 'addDocPanel' && <AddDocForm closePanel={closePanel}/>}
           {panel == 'editDocPanel' && <EditDocForm closePanel={closePanel}/>}
         </div>
-        <div className="menu-bar">
-          <div className="icon menu-mob">
+        <div className={menuMob ? "menu-bar on" : "menu-bar"}>
+          <div className="icon menu-mob" onClick={triggerMenu}>
             <div className="bar"></div>
             <div className="bar"></div>
             <div className="bar"></div>

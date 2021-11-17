@@ -22,6 +22,7 @@ export const UPDATE_WALL = 'UPDATE_WALL';
 export const EMPTY_WALL = 'EMPTY_WALL';
 export const CLEAR_PANEL = 'CLEAR_PANEL';
 export const BACK_TO_STAMP = 'BACK_TO_STAMP';
+export const MENU_MOB = 'MENU_MOB';
 
 export const changePanel = (panel) => ({
   type: CHANGE_PANEL,
@@ -137,6 +138,10 @@ export const clearPanel = (panel) => ({
 
 export const backToStamp = () => ({
   type: BACK_TO_STAMP,
+});
+
+export const menuMobbb = () => ({
+  type: MENU_MOB,
 });
 
 
