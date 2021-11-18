@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { Redirect } from 'react-router';
+import { useLocation, withRouter } from 'react-router-dom';
 import { updateDocName, emptyForm } from 'src/actions/element.js'
 import { getWall, getWallInfo, updateWallInput, changePanel, toggleEye, displayMode, redirectPDF, backToStamp, menuMobbb } from 'src/actions/wall.js'
 import { updateContents } from "src/actions/textEdit";
@@ -14,14 +13,14 @@ import InfoWallForm from './infoWall';
 
 import './style.scss';
 
-const Wall = () => {
+const Wall = ({ history }) => {
   const dispatch = useDispatch();
 
   // pour passer les infos du mur depuis la page Walls
   const location = useLocation();
   const { wallId } = location.state;
  
-  const { title, docList, panel, displaysquare, toPDF, menuMob } = useSelector((state) => state.wall);
+  const { title, docList, panel, displaysquare, menuMob } = useSelector((state) => state.wall);
   const currentUser = useSelector((state) => state.user.loggedUserInfos.id);
   //ouverture panneau latéral info/formulaires
   const slidePanel = () => {
@@ -73,12 +72,13 @@ const Wall = () => {
   const triggerMenu = () => {
     dispatch(menuMobbb());
   }
+
   //transcrire mur info dans rich text editor 
   const editPdf = () => {
     let contents='';
-    docs.forEach((doc) => {
+    docList.forEach((doc) => {
       contents += `<h2 style="font-size:32px;text-align:center;font-family: Montserrat,sans-serif;font-weight:bold;">${doc.name}</h2>
-        ${doc.type == 'image' ? `<img src="${doc.src}" width="200"/>` : `<p>${doc.src}</p>`}
+        ${doc.type == 'image' ? `<img src=${doc.src} />` : `<p>${doc.src}</p>`}
         <p style="font-size:24px;">${doc.description}</p>
         <p style="font-size:24px;font-weight:bold;">Liens :</p>
         <ul>
@@ -89,23 +89,19 @@ const Wall = () => {
       });
       contents += `</ul>
       `;
-      // if (doc.type == 'image') {
-      //   contentDelta.ops.push(
-      //     { insert: { image: doc.src}, attributes: { width: '100', height: '200' }}
-      //   );
-      // };
     });
-    dispatch(updateContents(contents));
-    dispatch(redirectPDF());
+     dispatch(updateContents(contents));
+     history.push('/PDF');
   }
-  
+
   return (
+    
     <div className="wall">
-      {/* {toPDF && <Redirect to="/PDF" />} */}
       <div className="sub-header">
         <h1>{ title }</h1>
       </div>
       <div className="main">
+        {/* {docList.length && <img src={getBase64Image(docList[5].src)}/>} */}
         <div className="dashboard">
           <div className="close-panel" onClick={closePanel}></div>
           <div className="fade-elem"></div>
@@ -133,4 +129,4 @@ const Wall = () => {
     </div>
   )
 };
-export default Wall;
+export default withRouter(Wall);

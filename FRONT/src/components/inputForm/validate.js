@@ -138,7 +138,7 @@ export const checkFile = (el) => {
   }
   return val;
 }
-
+//control field to custom
 export const checkCustom = (el, msg, CbackFunc) => {
   let val = true;
   if(!CbackFunc) {

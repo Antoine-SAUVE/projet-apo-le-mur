@@ -1,24 +1,52 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as React from "react";
-import ReactQuill, { Mixin, Toolbar, Quill } from "react-quill";
+
 import { saveAs } from 'file-saver';
 import { pdfExporter } from 'quill-to-pdf';
+import ReactQuill, { Mixin, Toolbar, Quill } from "react-quill";
 
-import docs from 'src/data/element';
-import { updateContents } from "src/actions/textEdit";
-import { redirectPDF } from "src/actions/wall";
+import { updateContents, setContents } from "src/actions/textEdit";
+
 import "react-quill/dist/quill.snow.css";
 
 
 const __ISIOS__ = navigator.userAgent.match(/iPad|iPhone|iPod/i) ? true : false;
+let quillRef = null; 
+let onKeyEvent = false;
 
 const WallFileEdit = () => {
   const dispatch = useDispatch();
   const { contents, delta } = useSelector((state) => state.textEdit);
 
-  let quillRef = null; 
-  let onKeyEvent = false;
+  
+  React.useEffect(() => {
+    console.log(contents);
+    let htmlObject = document.createElement('div');
+    htmlObject.innerHTML = contents;
+    let imgNodeList = Array.from(htmlObject.querySelectorAll('img'));
+    console.log(imgNodeList);
+    let arrayB64 = [];
+    imgNodeList.forEach((img) => {
+      getBase64FromUrl(img.src).then((data)=>{
+        img.src = data;
+        dispatch(setContents(htmlObject.outerHTML));
+      });
+    });
+  }, []);
+  
+
+  const getBase64FromUrl = async (url) => {
+    const data = await fetch(url);
+    const blob = await data.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob); 
+      reader.onloadend = () => {
+        const base64data = reader.result;   
+        resolve(base64data);
+      }
+    });
+  }
 
   const modules = {
     toolbar: {
@@ -36,7 +64,7 @@ const WallFileEdit = () => {
         ["clean"]
       ],
     },
-    clipboard: { matchVisual: false }
+    clipboard: { matchVisual: false },
   };
 
   const formats = [
@@ -97,13 +125,16 @@ const WallFileEdit = () => {
       document.documentElement.classList.toggle("edit-focus");
     }
   };
-
+  let pdfContent;
   const onChangeContents = (content, delta, source, editor) => {
     dispatch(updateContents(content, editor.getContents()));
+    pdfContent = editor.getContents();
   };
-
+  
   const savePDF = async () => {
+    console.log(delta);
     const pdfAsBlob = await pdfExporter.generatePdf(delta); 
+    console.log('delta2',delta);
     saveAs(pdfAsBlob, 'pdf-export.pdf'); 
   }
 

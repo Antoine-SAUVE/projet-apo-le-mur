@@ -1,4 +1,4 @@
-import { UPDATE_CONTENT } from "src/actions/textEdit";
+import { UPDATE_CONTENT, SET_CONTENT } from "src/actions/textEdit";
 
 const initialState = {
   subject: "",
@@ -10,6 +10,11 @@ const initialState = {
 
 const reducer = (state = initialState, action = {}) => {
   switch (action.type) {
+    case SET_CONTENT :
+    return{
+      ...state,
+      contents: action.contents,
+    }
     case UPDATE_CONTENT :
       return{
         ...state,
