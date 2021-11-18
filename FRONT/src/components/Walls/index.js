@@ -1,12 +1,12 @@
 import './walls.scss';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import Plus from 'src/assets/icons/plus-neg.png';
 import WallsCards from './WallsCards';
 import WallForm from './WallForm';
 import { getAllUsers } from '../../actions/users';
 import { getWalls } from '../../actions/walls';
+import { emptyWall } from "src/actions/wall";
 
 const Walls = () => {
   const dispatch = useDispatch();
@@ -15,6 +15,7 @@ const Walls = () => {
     setFormOpen(!isFormOpen);
   };
   useEffect(() => {
+    dispatch(emptyWall());
     dispatch(getAllUsers());
   }, []);
   useEffect(() => {
@@ -33,7 +34,7 @@ const Walls = () => {
       {
         isFormOpen && <WallForm setFormOpen={setFormOpen} />
       }
-      <WallsCards />
+      <WallsCards openForm={handleOpenForm} />
     </div>
   );
 };

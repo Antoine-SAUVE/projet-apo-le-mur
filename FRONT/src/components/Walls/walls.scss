@@ -52,6 +52,32 @@
   justify-content: left;
   align-items: flex-start;
   flex-wrap: wrap;
+  &__noWall {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem;
+    margin: 0 auto;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    box-shadow: 4px 5px 5px -2px rgba(0,0,0,0.5);
+    &__img{
+      width:50px;
+      margin-bottom: 0.5rem;
+    }
+    &__createWall{
+      border: 1px solid black;
+      margin-top:1rem;
+      padding:0.5rem;
+      box-shadow: 4px 5px 5px -2px rgba(0,0,0,0.3);
+    }
+    &__createWall:hover{
+      border: 1px solid black;
+      background-color: black;
+      color: white;
+    }
+  }
 }
 .wallcard{
   position:relative;
@@ -200,5 +226,10 @@
   .wallcard{
     width:100%;
     margin-bottom: 6rem;
+  }
+  .wallsCards{
+    &__noWall{
+      // height: ;
+    }
   }
 }

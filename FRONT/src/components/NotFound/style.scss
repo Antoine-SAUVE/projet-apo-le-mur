@@ -1,0 +1,21 @@
+.errorpage-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 450px;
+  padding: auto;
+  background-color: white;
+  text-align: center;
+  
+  .error-title{
+    font-size: 5rem;
+  }
+  .error-subtitle{
+    font-size: 2rem;
+  }
+}
+.error_404{
+  font-size:13rem;
+}

@@ -9,7 +9,7 @@ import { updateWallInput, updateWallFile, tryUser, deleteUser, changeWall, updat
 
 import './style.scss';
 
-const ChangeWallForm = ({closePanel}) => {
+const ChangeWallForm = () => {
   const dispatch = useDispatch();
   const { title, description, photo, users, owner_id, currentAdded, addedError } = useSelector((state) => state.wall);
   const imgName = photo.substring(photo.lastIndexOf('/') + 1);
@@ -17,17 +17,19 @@ const ChangeWallForm = ({closePanel}) => {
   const inputChange = (e) => {
     dispatch(updateWallInput(e.target.value, e.target.name));
   }
-
+  //ajouter un utilisateur à la liste
   const addUser = () => {
     if (currentAdded.trim().length) dispatch(tryUser(currentAdded));
   }
-
+  //maj champ d'ajout utilisateur
+  //récupération de l'élément pour controle de champs
   const [userAdd, setUserAdd] = useState('');
   const changeUser = (e) => {
     dispatch(updateUserAdd(e.target.value, e.target.name));
     setUserAdd(e.target);
   }
-
+  //si élément ajout utilisateur récupéré
+  //contrôle contraintes (type mail et utilisateur existant/pas encore ajouté)
   useEffect(() => {
     if (userAdd == '') return;
     let available;
@@ -35,11 +37,11 @@ const ChangeWallForm = ({closePanel}) => {
     if (checkEmail(userAdd)) checkCustom(userAdd, addedError, available);
   }, [addedError]);
 
-
+  //suppresion d'un utilisateur
   const suppUser = (e) => {
     dispatch(deleteUser(e.target.previousElementSibling.textContent));
   }
-
+  //ajout image
   const fileChange = (e) => {
     dispatch(updateWallFile(e.target.files[0], e.target.name));
   }

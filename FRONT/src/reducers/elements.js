@@ -16,17 +16,20 @@ const initialState = {
 const reducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case UPDATE_DOC_PROPS :
+      //MAJ CHAMPS FORM
       return{
         ...state,
         [action.prop]: action.name,
       }
     case UPDATE_FILE_PROPS :
+      //MAJ IMG ET SON NOM (FORM)
       return{
         ...state,
         [action.prop]: action.name.name,
         img: action.name,
       }
     case POST_LINK :{
+      //AJOUT LIEN DANS LISTE DE LIEN DE DOC
       const allLinks = state.link;
       const newLinks = [
         ...allLinks,
@@ -39,6 +42,7 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case DELETE_LINK :{
+      //SUPPRESSION LIEN DANS LISTE DE LIEN DE DOC
       const allLinks = state.link;
       const newLinks = allLinks.filter((link) => {
         return link != action.link
@@ -51,6 +55,7 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case VIEW_DOC :
+      //MAJ ETAT DOC AVEC DOCUMENT SELECTIONNE
       const {id, name, description, type, link, src, owner_id, position} = action.doc;
       return{
         ...state,
@@ -64,6 +69,7 @@ const reducer = (state = initialState, action = {}) => {
         position: position,
       }
     case EMPTY_FORM :
+      //VIDER ETAT DOC POUR AFFICHER FORM VIERGE
       return{
         ...state,
         name: '',

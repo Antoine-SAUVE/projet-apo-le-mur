@@ -14,20 +14,19 @@ const Doc = ({ photo, margin, direction, top, left }) => {
   const detailed = useSelector((state) => state.wall.detailed);
 
   const currentUser = useSelector((state) => state.user.loggedUserInfos.id);
-
+  //mode disposition vertical des images
   const imgStyle = { margin: margin };
   if (direction === "column") {
     imgStyle.position = "absolute";
     imgStyle.left = left;
     imgStyle.top = top;
   }
-
+  //afficher bouton permettant consultation info au clic sur document
   const posterEye = () => {
     photo.id == detailed ? dispatch(toggleEye(-1)) : dispatch(toggleEye(photo.id));
   }
-
+  //afficher fiche d'information du document
   const seeDoc = (e) => {
-
     dispatch(viewDoc({
       id:photo.id, 
       name:photo.name, 
@@ -41,17 +40,8 @@ const Doc = ({ photo, margin, direction, top, left }) => {
     photo.getInfo(e);
   }
 
-  // const arrayElem = Array.from(event.target.parentNode.children);
-  // arrayElem.forEach((elem, index) => {
-    
-  // });
-  const handleClick = event => {
-    console.timeLog('yyyyy');
-    // onClick(event, { photo, index });
-  };
-
   return (
-    <div className={photo.owner_id == currentUser ? "doc owned" : "doc"} onClick={handleClick}>
+    <div className={photo.owner_id == currentUser ? "doc owned" : "doc"} >
       {photo.id == detailed && <div className="see-btn" panel={photo.getAction} onClick={seeDoc}></div>}
       <div className="doc-content">
         {photo.type== 'image' && <img src={photo.src} alt={photo.name} onClick={posterEye}/>}
@@ -69,6 +59,8 @@ Doc.propTypes = {
     type: PropTypes.string.isRequired,
     getInfo: PropTypes.func.isRequired,
     getAction: PropTypes.string.isRequired,
+    owner_id: PropTypes.number.isRequired,
+    position: PropTypes.number.isRequired,
   }).isRequired,
   
 };

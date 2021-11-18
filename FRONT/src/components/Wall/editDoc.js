@@ -9,7 +9,7 @@ import { validateForm, validateField, checkUrl } from "src/components/inputForm/
 import { changeDoc } from "src/actions/element";
 
 import './style.scss';
-
+//FORMULAIRE D'EDITION DE DOCUMENT
 const editDocForm = ({  closePanel }) => {
   const dispatch = useDispatch();
   const elements = useSelector((state) => state.elements);
@@ -20,15 +20,15 @@ const editDocForm = ({  closePanel }) => {
   const inputChange = (e) => {
     dispatch(updateDocName(e.target.value, e.target.name));
   }
-
+  //ajout dans la liste de liens
   const addLink = (e) => {
     if (currentLink.trim().length && checkUrl(e.target.previousElementSibling.firstChild.firstChild)) dispatch(postLink(currentLink));
   }
-
+  //suppression liens
   const suppLink = (e) => {
     dispatch(deleteLink(e.target.previousElementSibling.textContent));
   }
-
+  //ajout image
   const fileChange = (e) => {
     dispatch(updateFileName(e.target.files[0], e.target.name));
   }
@@ -43,15 +43,16 @@ const editDocForm = ({  closePanel }) => {
       dispatch(changeDoc());
     }
   }
-
+  //validation de formulaire
   const checkForm = (formEl) => {
     if (validateForm(formEl)) return true;
   }
-
+  //controle de champs
+  //intervient après 1er submit
   const formChange = (e) => {
     validateField(e.target);
   }
-  
+  //liste des liens
   const linksListJSX = link.map((lien) => {
     return(
       <div key={lien}>

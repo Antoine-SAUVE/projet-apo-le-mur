@@ -1,5 +1,5 @@
 // import axios from 'axios';
-import { CHANGE_WALL, deleteWallFromStore, storeNewWall, updateWall, clearPanel } from '../actions/wall';
+import { CHANGE_WALL, deleteWallFromStore, storeNewWall, updateWall, changePanel } from '../actions/wall';
 import { storeAllWalls } from '../actions/walls';
 import API from './api';
 
@@ -71,20 +71,19 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case CHANGE_WALL: {
-      const formerWall = state.walls.wallsList.find((wall) => wall.id == state.wall.id);
-
+      //MODIFICATIONS DES INFO DU MUR
+      //si image changée, envoyer son filedata, sinon son nom existant
       let picture;
-      formerWall.photo != state.wall.photo ? picture = state.wall.img : picture = state.wall.photo.substring(state.wall.photo.lastIndexOf('/') + 1);
+      state.wall.wallStamp.photo != state.wall.photo ? picture = state.wall.img : picture = state.wall.photo.substring(state.wall.photo.lastIndexOf('/') + 1);
 
       const usersId = state.wall.users.map((user) => user.id);
-
+      //création formData pour envoyer au back
       const wallData = new FormData();
       wallData.set('photo', picture);
       wallData.set('title', state.wall.title);
       wallData.set('description', state.wall.description);
       wallData.set('users', usersId);
-      wallData.set('title_color', formerWall.title_color);
-
+      wallData.set('title_color', state.wall.title_color);
       const config = {
         method: 'patch',
         url: `/user/walls/${state.wall.id}`,
@@ -93,8 +92,9 @@ const wallMiddleware = (store) => (next) => (action) => {
       };
       API(config)
         .then((response) => {
-          console.log('infos mur changées',response.data);
-          store.dispatch(clearPanel(false));
+          //fermer panneau
+          //maj des info du mur dans state wall
+          store.dispatch(changePanel(false));
           store.dispatch(updateWall(response.data));
         })
         .catch((error) => {

@@ -4,11 +4,11 @@ import { supDoc, emptyForm } from 'src/actions/element.js';
 
 import './style.scss';
 
-const infoDocForm = ({ closePanel }) => {
+const infoDocForm = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.loggedUserInfos.id);
   const { name, description, type, src, link, owner_id } = useSelector((state) => state.elements);
-
+  //passer à la modification de document
   const changeForm= () => {
     const fadeElem = document.querySelector('.fade-elem')
     fadeElem.classList.add('on');
@@ -19,11 +19,9 @@ const infoDocForm = ({ closePanel }) => {
       fadeElem.classList.remove('on');
     }, 1000);
   }
-
+  //suppression de document
   const supElem = () => {
     dispatch(supDoc());
-    dispatch(emptyForm());
-    closePanel()
   }
 
   return (

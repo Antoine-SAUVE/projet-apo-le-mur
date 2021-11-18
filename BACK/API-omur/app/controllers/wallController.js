@@ -170,8 +170,6 @@ const wallController = {
             // we get the path of the photo (and we remove "public/" in the path) and insert it in req.body
             if(req.file){
                 req.body.photo = req.file.filename;
-            }else{
-                req.body.photo = ""
             };
             // We create a new instance of Wall and save it in database
             const newWall = new Wall(req.body);

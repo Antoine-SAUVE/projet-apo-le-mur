@@ -10,6 +10,7 @@ import './styles.css';
 import { Route, Switch } from 'react-router-dom';
 import MainHeader from '../MainHeader';
 import { populateLoggedInfosIfLogged } from '../../actions/users';
+import NotFound from '../NotFound';
 // == Composant
 const App = () => {
   const dispatch = useDispatch();
@@ -38,6 +39,9 @@ const App = () => {
         </Route>
         <Route exact path="/PDF">
           <WallFileEdit />
+        </Route>
+        <Route>
+          <NotFound />
         </Route>
       </Switch>
     </div>

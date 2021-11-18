@@ -96,7 +96,7 @@ const reducer = (state = initialState, action = {}) => {
         },
         logged: true,
         logError: '',
-        isMenuOpen: !state.isMenuOpen,
+        isMenuOpen: false,
       };
     case 'DISCONNECT_USER':
       localStorage.clear();

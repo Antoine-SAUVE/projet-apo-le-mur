@@ -1,6 +1,6 @@
 // import axios from 'axios';
 
-import { GET_WALL, GET_WALL_INFO, CHANGE_POS, setWall, setWallInfo, emptyWall, updatePos, clearPanel } from "src/actions/wall";
+import { GET_WALL, GET_WALL_INFO, CHANGE_POS, setWall, setWallInfo, emptyWall, updatePos, changePanel } from "src/actions/wall";
 import { storeAllWalls } from "src/actions/walls";
 import { POST_DOC, SUP_DOC, CHANGE_DOC, SUP_POS, addDoc, deleteDoc, updateDoc, emptyForm, supPos } from "src/actions/element";
 
@@ -11,14 +11,14 @@ const wallMiddleware = (store) => (next) => (action) => {
   const { id } = state.wall;
   switch (action.type) {
     case POST_DOC: {
-      // on crée un formData à envoyer au back
+      //AJOUT DE DOCUMENT
       const { name, description, type, src, link, img } = state.elements;
       const owner_id = state.user.loggedUserInfos.id;
-      console.log('owner_id', state.user.loggedUserInfos.id);
-      console.log('owner_id', owner_id);
+      
       const position = state.wall.docList.length + 1;
+      // formatage liens pour requete 
       let linkToPost = link.join('\\');
-
+      // création formData pour envoyer au back
       const docData = new FormData();
       docData.append('name', name);
       docData.append('description', description);
@@ -36,9 +36,11 @@ const wallMiddleware = (store) => (next) => (action) => {
       };
       API(config)
         .then((response) => {
-          console.log(response.data, 'élément crée');
+          //envoyer données dans state du mur(liste de docs)
+          //fermer panneau
+          //vider formulaire
           store.dispatch(addDoc(response.data));
-          store.dispatch(clearPanel(false));
+          store.dispatch(changePanel(false));
           setTimeout(store.dispatch(emptyForm()), 500);
         })
         .catch((error) => {
@@ -48,12 +50,15 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case CHANGE_DOC: {
+      //MODIFICATION D'UN DOCUMENT
       const doc = state.elements;
       const docList = state.wall.docList;
       let FormerDoc = docList.find((elem) => elem.id == doc.id);
       const docData = new FormData();
       let index = 0;
       let propName = '';
+      //comparaison données objet initial(liste de doc du state wall)/données objet en cours de modif(state element)
+      //transmission données à jour dans le formData pour envoie au back 
       for (let prop in FormerDoc) {
         propName = Object.keys(FormerDoc)[index];
         if (doc.hasOwnProperty(propName) && FormerDoc[prop] !== doc[prop]) {
@@ -78,8 +83,6 @@ const wallMiddleware = (store) => (next) => (action) => {
         }
         index++;
       }
-      docData.get('photo') ? console.log('data photo', docData.get('photo')) : console.log('data src', docData.get('src'));
-      console.log('position', docData.get('position'));
       const config = {
         method: 'patch',
         url: `/user/walls/${state.wall.id}/elements/${doc.id}`,
@@ -88,10 +91,11 @@ const wallMiddleware = (store) => (next) => (action) => {
       };
       API(config)
         .then((response) => {
-          console.log('doc changé');
-          console.log(response.data);
+          //envoyer données dans state du mur(liste de docs)
+          //fermer panneau
+          //vider formulaire
           store.dispatch(updateDoc(response.data));
-          store.dispatch(clearPanel(false));
+          store.dispatch(changePanel(false));
           setTimeout(store.dispatch(emptyForm()), 500);
         })
         .catch((error) => {
@@ -101,13 +105,14 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case SUP_DOC: {
+      //SUPPRESSION D'UN DOCUMENT
       const config = {
         method: 'delete',
         url: `/user/walls/${state.wall.id}/elements/${state.elements.id}`,
       };
       API(config)
         .then((response) => {
-          console.log('doc effacé', response.data);
+          //renvoi vers fonction maj positions des docs dans le back
           store.dispatch(supPos(state.elements.id, state.elements.position));
         })
         .catch((error) => {
@@ -117,13 +122,14 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case GET_WALL: {
+      //RECUPERATION DES DOCUMENTS DU MUR
       const config = {
         method: 'get',
         url: `/user/walls/${id}/elements`,
       };
       API(config)
         .then((response) => {
-          console.log('récupère les éléments',response.data);
+          //maj liste des documents dans state wall
           store.dispatch(setWall(response.data));
         })
         .catch((error) => {
@@ -133,8 +139,10 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case CHANGE_POS :{
+      //MAJ CHANGEMENT ORDRE DES DOCUMENTS
       let newDocList = action.docList;
       const { newPos, oldPos } = action;
+      //maj position tous les documents après changement position d'un document
       if (oldPos > newPos) {
         newDocList.forEach((doc) => {
           if (doc.position == oldPos) {
@@ -152,7 +160,6 @@ const wallMiddleware = (store) => (next) => (action) => {
           }
         });
       }
-      
       newDocList = {newDocList};
       const config = {
         method: 'patch',
@@ -161,7 +168,7 @@ const wallMiddleware = (store) => (next) => (action) => {
       };
       API(config)
         .then((response) => {
-          console.log('change les elem de position',response.data);
+          //maj position des docs dans liste de docs du state wall
           store.dispatch(updatePos(response.data));
         })
         .catch((error) => {
@@ -171,6 +178,7 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case SUP_POS: {
+      //MAJ POSITIONS DOCUMENTS SUITE A SUPPRESION DOC
       let newDocList = state.wall.docList;
       newDocList.forEach((doc) => {
         if (doc.position > action.position) doc.position -= 1;
@@ -184,8 +192,11 @@ const wallMiddleware = (store) => (next) => (action) => {
       };
       API(config)
         .then((response) => {
-          console.log('elements repositionnés après sup',response.data);
+          //maj de la liste de doc dans le state wall(suppression doc et nouvelles positions)
+          //fermer panneau
+          //vider formulaire
           store.dispatch(deleteDoc(response.data));
+          store.dispatch(changePanel(false));
           setTimeout(store.dispatch(emptyForm()), 500);
         })
         .catch((error) => {
@@ -195,17 +206,15 @@ const wallMiddleware = (store) => (next) => (action) => {
       break;
     }
     case GET_WALL_INFO: {
+      //RECUPERER LES INFOS DU MUR
       const config = {
         method: 'get',
         url: `/user/walls/${id}`,
       };
       API(config)
         .then((response) => {
-          console.log('récupère les infos du mur',response.data);
+          //maj des info du mur => state wall
           store.dispatch(setWallInfo(response.data));
-          if (!state.walls.wallsList.length) {
-            store.dispatch(storeAllWalls({result:[response.data.result],collabsData: response.data.collabsData}));
-          }
         })
         .catch((error) => {
           console.log(error);

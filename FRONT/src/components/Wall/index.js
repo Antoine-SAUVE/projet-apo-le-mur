@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Redirect } from 'react-router';
-import docs from 'src/data/element';
 import { updateDocName, emptyForm } from 'src/actions/element.js'
-import { getWall, getWallInfo, updateWallInput, changePanel, toggleEye, displayMode, redirectPDF, clearPanel, backToStamp, menuMobbb } from 'src/actions/wall.js'
+import { getWall, getWallInfo, updateWallInput, changePanel, toggleEye, displayMode, redirectPDF, backToStamp, menuMobbb } from 'src/actions/wall.js'
 import { updateContents } from "src/actions/textEdit";
 import Docs from './docs';
 import AddDocForm from './addDoc';
@@ -20,17 +19,17 @@ const Wall = () => {
 
   // pour passer les infos du mur depuis la page Walls
   const location = useLocation();
-  const { wallTitle, wallId } = location.state;
+  const { wallId } = location.state;
  
-  const { docList, panel, displaysquare, toPDF, menuMob } = useSelector((state) => state.wall);
+  const { title, docList, panel, displaysquare, toPDF, menuMob } = useSelector((state) => state.wall);
   const currentUser = useSelector((state) => state.user.loggedUserInfos.id);
-
+  //ouverture panneau latéral info/formulaires
   const slidePanel = () => {
     document.querySelector('.main').classList.add('on');
   }
-
+  //fermeture panneau latéral
+  //avec rafraichissement info/form si fermeture au clic bouton de fermeture panneau
   const closePanel = (e) => {
-    console.log('event1', e);
     if (e != undefined) {
       if ( panel == 'changeWallPanel') {
         dispatch(backToStamp());
@@ -46,16 +45,17 @@ const Wall = () => {
 
   useEffect(()=>{
     if (panel == false) {
-      dispatch(clearPanel(true));
+      dispatch(changePanel(true));
       closePanel();
     }
   }, [panel]);
-
+  //afficher le bon formulaire/résumé d'info dans le panneau latéral
   const displayPanel = (e) => {
     dispatch(changePanel(e.target.getAttribute('panel')));
     slidePanel();
   }
-
+  //initialisation mur: récupération données mur/utilisateur et documents du mur
+  //event désactivation bouton doc au clic page
   useEffect(() => {
     dispatch(updateWallInput(wallId, 'id'));
     dispatch(updateDocName(currentUser, 'owner_id'));
@@ -65,15 +65,15 @@ const Wall = () => {
       if(!e.target.parentNode.parentNode.classList.contains('doc')) dispatch(toggleEye(-1));
     });
   },[]);
-
+  //changer mode affichage de mur
   const displaySquare = (e) => {
     dispatch(displayMode());
   }
-
+  //ouvrir/fermer menu mobile
   const triggerMenu = () => {
     dispatch(menuMobbb());
   }
-
+  //transcrire mur info dans rich text editor 
   const editPdf = () => {
     let contents='';
     docs.forEach((doc) => {
@@ -98,22 +98,22 @@ const Wall = () => {
     dispatch(updateContents(contents));
     dispatch(redirectPDF());
   }
-  //const wallDoc = docs;
+  
   return (
     <div className="wall">
       {/* {toPDF && <Redirect to="/PDF" />} */}
       <div className="sub-header">
-        <h1>{ wallTitle }</h1>
+        <h1>{ title }</h1>
       </div>
       <div className="main">
         <div className="dashboard">
           <div className="close-panel" onClick={closePanel}></div>
           <div className="fade-elem"></div>
           {panel == 'infoWallPanel' && <InfoWallForm />}
-          {panel == 'changeWallPanel' && <ChangeWallForm closePanel={closePanel}/>}
-          {panel == 'infoDocPanel' && <InfoDocForm closePanel={closePanel}/>}
-          {panel == 'addDocPanel' && <AddDocForm closePanel={closePanel}/>}
-          {panel == 'editDocPanel' && <EditDocForm closePanel={closePanel}/>}
+          {panel == 'changeWallPanel' && <ChangeWallForm />}
+          {panel == 'infoDocPanel' && <InfoDocForm />}
+          {panel == 'addDocPanel' && <AddDocForm />}
+          {panel == 'editDocPanel' && <EditDocForm />}
         </div>
         <div className={menuMob ? "menu-bar on" : "menu-bar"}>
           <div className="icon menu-mob" onClick={triggerMenu}>

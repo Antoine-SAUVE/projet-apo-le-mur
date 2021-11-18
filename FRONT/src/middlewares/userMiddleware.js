@@ -21,12 +21,14 @@ const userMiddleware = (store) => (next) => (action) => {
       break;
     }
     case TRY_USER: {
+      //CHERCHER UTILISATEUR DANS LA BASE
       const config = {
         method: 'get',
         url: '/user/list',
       };
       API(config)
         .then((response) => {
+          //renvoyer infos utilisateur ou absence utilisateur pour ajout au state wall 
           const user = response.data.find((user) => user.email == action.user);
           user == undefined ? store.dispatch(postUser('none')) : store.dispatch(postUser(user));
         })

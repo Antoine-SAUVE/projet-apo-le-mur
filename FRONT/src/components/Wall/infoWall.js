@@ -8,6 +8,7 @@ const InfoWallForm = () => {
   const user = useSelector((state) => state.user.loggedUserInfos.id);
   const { created_at, updated_at, title, description, photo, users, owner_id,  owner_name } = useSelector((state) => state.wall);
 
+  //passer à la modification du mur
   const changeForm= () => {
     const fadeElem = document.querySelector('.fade-elem')
     fadeElem.classList.add('on');

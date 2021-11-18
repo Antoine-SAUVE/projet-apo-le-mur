@@ -13,6 +13,7 @@ const initialState = {
   description: 'description du thème Rap: Le rap est un mouvement culturel et musical qui tire ses origines du hip-hop',
   created_at: '20/10/2021',
   updated_at: '28/10/2021',
+  title_color: '',
   currentAdded: '',
   addedError: '',
   img:{},
@@ -30,6 +31,7 @@ const localPath = 'http://localhost:3000/';
 const reducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case SET_WALL :
+      //INITIALISATION DE DOCLIST(documents du mur)
       const newDocList = action.docList.map((elem) => {
         let linkArray, srcEdit = elem.src;
         if (elem.type == 'image') srcEdit = localPath+srcEdit;
@@ -52,6 +54,7 @@ const reducer = (state = initialState, action = {}) => {
         docList: newDocList,
       }
     case ADD_DOC : {
+      //AJOUT DOCUMENT DANS LA LISTE DE DOCS
       const { id, name, description, type, link, src, owner_id, position } = action.doc;
       const docList = state.docList;
       let linkArray, srcEdit = src;
@@ -73,7 +76,6 @@ const reducer = (state = initialState, action = {}) => {
         height:3,
       };
       const allDocs = state.docList;
-      console.log('newDoc',newDoc);
       const newDocs = [
         ...allDocs,
         newDoc,
@@ -89,6 +91,7 @@ const reducer = (state = initialState, action = {}) => {
         docList: action.items
       }
     case DELETE_DOC : {
+      //REORDONNER ET MAJ LISTE DOC APRES SUPPRESION
       let newDocList = action.docList;
       newDocList.sort((a, b) => a.position - b.position);
       return{
@@ -97,6 +100,7 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case UPDATE_DOC : {
+      //MAJ DOCUMENT MODIFIE DANS LA LISTE DE DOC
       let newDoc = action.doc;
       let newDocList = state.docList.filter((doc) => doc.id != action.doc.id);
       if (newDoc.type == 'image') newDoc.src = localPath+newDoc.src;
@@ -109,21 +113,27 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case CHANGE_PANEL :
+      //CHANGE DE PANNEAU
+      //si panneau ouvert donne le form à afficher, si doit être fermé donne false
       return{
         ...state,
         panel: action.panel,
       }
     case TOGGLE_EYE :
+      //ACTIVE/DESACTIVE BOUTON CONSULTATION DOC
       return{
         ...state,
         detailed: action.detailed,
       }
     case POST_USER:{
+      //CONTROLE ET AJOUTE UTILISATEUR AU MUR
       const registered = state.users;
 
+      //vérifie si déjà inscrit au mur
       let isThere
       if (typeof action.user == 'object') isThere = registered.find((user) => user.id == action.user.id);
-
+      //si existe dans base utilisateur et pas inscrit au mur, ajout au utilisateurs du mur
+      //sinon défini message d'erreur approprié
       if (typeof action.user == 'object' && isThere == undefined) {
         const newUsers = [
           ...registered,
@@ -150,6 +160,7 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case DELETE_USER :{
+      //SUPPRIME UTILISATEUR DU MUR
       const infoUser = action.user.split(' ');
       const allUsers = state.users;
       const newUsers = allUsers.filter((user) => {
@@ -162,48 +173,54 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case UPDATE_DOC_PROPS :
+      //MAJ CHAMPS FORM
       return{
         ...state,
         [action.prop]: action.name,
       }
 
     case UPDATE_USER_ADD :
+      //MAJ CHAMPS AJOUT UTILISATEUR DU FORM
       return{
         ...state,
         [action.prop]: action.name,
         addedError: ''
       }
     case UPDATE_WALL_FILE :
+      //MAJ IMG ET SON NOM (FORM)
       return{
         ...state,
         [action.prop]: action.name.name,
         img: action.name,
       }
     case DISPLAY_MODE :
+      //CHANGER LE MODE D'AFFICHAGE DES DOC DU MUR
       return{
         ...state,
         displaysquare: !state.displaysquare,
       }
     case REDIRECT_PDF :
+      //REDIRIGER VERS PAGE D'EDITION ET GENERATION DE PDF 
       return{
         ...state,
         toPDF: !state.toPDF,
       }
     case UPDATE_POS :{
+      //MAJ DES POSITIONS DES DOCS
       return{
         ...state,
         position: action.docList,
       }
     }
     case SET_WALL_INFO : {
+      //INITIALISTAION INFOS DU MUR
       let {created_at, description, id, owner_id, photo, title, updated_at} = action.wall.result;
       const usersTab = action.wall.collabsData;
       const owner = usersTab.find((user) => user.id == owner_id);
-      
       const users = usersTab.map((user) => {
         return user.name;
       });
-
+      //formatage dates
       const dateToString = (date) => {
         let stringDate = date.substring(0, 10);
         stringDate = stringDate.split('-');
@@ -226,13 +243,13 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case UPDATE_WALL : {
+      //MODIFICATION DU MUR
       let {created_at, description, photo, title, updated_at} = action.wall.result;
       const usersTab = action.wall.collabsData;
-      
       const users = usersTab.map((user) => {
         return user.name;
       });
-
+      //formatage dates
       const dateToString = (date) => {
         let stringDate = date.substring(0, 10);
         stringDate = stringDate.split('-');
@@ -252,6 +269,7 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case BACK_TO_STAMP:{
+      //RECUPERATION STATE DU MUR AVANT SAISIES DANS LE FORM MODIF DU MUR
       const {description, photo,title, users} = state.wallStamp;
       return{
         ...state,
@@ -262,17 +280,13 @@ const reducer = (state = initialState, action = {}) => {
       }
     }
     case EMPTY_WALL:
+      //VIDER LE MUR
       return{
         ...state,
         docList: [],
       }
-    case CLEAR_PANEL:
-      return{
-        ...state,
-        panel: action.panel,
-      }
     case MENU_MOB:
-      console.log('state.menuMob',state.menuMob);
+      //CHANGER ETAT OUVERT/FERME DU MENU MOBILE
       return{
         ...state,
         menuMob: !state.menuMob,

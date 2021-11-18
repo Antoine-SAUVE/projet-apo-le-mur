@@ -8,8 +8,11 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
 import './style.scss';
 
+//fonctions de librairie react-sortable-hoc 
+//pour déplacer et ordonner des éléments 
 const SortablePhoto = SortableElement((item)  => <Doc {...item} />);
 const SortableGallery = SortableContainer(({ items }) => (
+//composant de librairie react-photo-gallery
   <Gallery photos={items} renderImage={ props => {
     return <SortablePhoto  {...props} />
   }  } />
@@ -24,9 +27,9 @@ const Docs = ( {docs, getAction, getInfo} ) => {
   useEffect(() => {
       setItems(docs)
   }, [docs]);
-
+  //récupération et enregistrement changement position dans state/bdd
+  //changement position dans page avec librairie array-move
   const onSortEnd = ({ oldIndex, newIndex }) => {
-    console.log('items items items', items);
     dispatch(changePos(oldIndex + 1, newIndex + 1, docList));
     setItems(arrayMove(items, oldIndex, newIndex));
   };
